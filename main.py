@@ -36,6 +36,8 @@ async def get_service_status(request: Request):
         )
 
     command = ['systemctl', 'status', service_name]
+    logger.info('Executing command: %s', ' '.join(command))
+
     process = await subprocess.create_subprocess_exec(
         *command,
         stdout=subprocess.PIPE,
