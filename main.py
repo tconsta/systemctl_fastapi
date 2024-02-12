@@ -49,7 +49,6 @@ async def get_service_status(request: Request):
         raise HTTPException(status_code=500, detail=process.stderr)
 
     stdout, stderr = await process.communicate()
-    logger.debug('stdout: %s, stderr: %s', stdout, stderr)
     command_output = stdout.decode() or stderr.decode()
     service_info = SystemctlParser().parse(command_output)
 
