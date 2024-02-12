@@ -12,9 +12,9 @@ It's a test assignment for a job.
 
 Currently, the service is up and running on AWS, and can be accessed here:
 
-https://35.156.224.125/systemctl/status?service=boot-efi.mount
+http://35.156.224.125/systemctl/status?service=boot-efi.mount
 
-`curl -X GET "https://35.156.224.125/systemctl/status?service=boot-efi.mount"`
+`curl -X GET "http://35.156.224.125/systemctl/status?service=boot-efi.mount"`
 
 Server: t2.micro, Ubuntu.
 
