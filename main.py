@@ -1,9 +1,17 @@
 import re
 from asyncio import subprocess
+import logging
 
 from fastapi import FastAPI, Request, HTTPException
 
 from systemctl_parser import SystemctlParser
+
+logging.basicConfig(
+    format='%(asctime)s - %(levelname)s - %(message)s',
+    handlers=[logging.FileHandler('app.log')],
+    level=logging.INFO,
+)
+logger = logging.getLogger(__name__)
 
 app = FastAPI()
 
@@ -17,9 +25,11 @@ SAFE_REGEX = re.compile(r'^[a-zA-Z0-9\\._-]+$')
     summary='Get service status using systemctl.',
 )
 async def get_service_status(request: Request):
+    logger.info('Received request: %s', request.url)
     service_name = request.query_params.get('service')
 
     if not service_name or not SAFE_REGEX.match(service_name):
+        logger.warning('Invalid service name: %s', service_name)
         raise HTTPException(
             status_code=400,
             detail='Service name is not specified or invalid/unsafe',
@@ -33,6 +43,7 @@ async def get_service_status(request: Request):
     )
 
     if process.returncode:
+        logger.error('Failed to execute systemctl status: %s', process.stderr)
         raise HTTPException(status_code=500, detail=process.stderr)
 
     stdout, _ = await process.communicate()

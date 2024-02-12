@@ -1,6 +1,9 @@
 import re
+import logging
 
 from structures import ServiceInfo, ServiceState
+
+logger = logging.getLogger(__name__)
 
 
 class SystemctlParser:
@@ -15,9 +18,11 @@ class SystemctlParser:
         match = not_found_regex.search(command_output)
 
         if match:
+            logger.warning('Service not found: %s', match.group(1))
             service_state = ServiceState.NOT_FOUND.value
 
         if not service_state:
+            logger.error('Systemctl output is invalid: %s', command_output)
             raise ValueError('Systemctl output is invalid')
 
         return ServiceInfo(
