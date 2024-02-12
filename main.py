@@ -48,7 +48,8 @@ async def get_service_status(request: Request):
         logger.error('Failed to execute systemctl status: %s', process.stderr)
         raise HTTPException(status_code=500, detail=process.stderr)
 
-    stdout, _ = await process.communicate()
+    stdout, stderr = await process.communicate()
+    logger.debug('stdout: %s, stderr: %s', stdout.decode(), stderr.decode())
     service_info = SystemctlParser().parse(stdout.decode())
 
     return {
